@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Exam Result</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-light bg-light">
+       <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Online Course</a>
+            </div>
+       </div>
+    </nav>
+    <div class="container-fluid">
+        {% if total_score >= 0 %}
+        <div class="alert alert-success">
+            <strong>Congratulations!</strong> You have finished the exam.
+            <p>Your total score is {{ total_score }}</p>
+        </div>
+        {% else %}
+        <div class="alert alert-danger">
+            <strong>Failed!</strong> Please try again.
+        </div>
+        {% endif %}
+        
+        <h3>Detailed Results</h3>
+        {% for question in course.question_set.all %}
+        <div class="card mt-2">
+            <div class="card-header">
+                {{ question.content }}
+            </div>
+            <div class="card-body">
+                {% for choice in question.choice_set.all %}
+                <p class="
+                   {% if choice.is_correct %}
+                   text-success
+                   {% elif choice in submission.choices.all and not choice.is_correct %}
+                   text-danger
+                   {% endif %}
+                   ">
+                    {{ choice.content }} 
+                    {% if choice.is_correct %}(Correct){% endif %}
+                    {% if choice in submission.choices.all %}(Selected){% endif %}
+                </p>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+        <a href="{% url 'onlinecourse:course_details' course.id %}" class="btn btn-primary mt-3">Back to Course</a>
+    </div>
+</body>
+</html>
